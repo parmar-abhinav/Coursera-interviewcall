@@ -10,7 +10,18 @@ import Navigationn from './Navbar/Navigationn'
 
 class Home extends Component
 {
-    
+
+    constructor(props)
+    {
+        super(props);
+        this.changetype = this.changetype.bind(this);
+    }
+
+    changetype(type)
+    {
+        this.props.handletype(type);
+    }
+
     render(){
         const items = [
             {
@@ -24,7 +35,7 @@ class Home extends Component
           ];
   return (
             <div>
-                <Navigationn />
+                <Navigationn  greet = {this.changetype} />
                 <div className="col-12 mt-1">
                     <UncontrolledCarousel items={items} />
                 </div>

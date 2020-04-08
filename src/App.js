@@ -5,25 +5,47 @@ import Candhome from './components/candidate/Candhome';
 import Interhome from './components/Interviewer/Interhome';
 import Schedule from './components/Interviewer/Schedule';
 import Page from './components/PNF/Page';
-import {Switch, Route, Redirect, Router, BrowserRouter} from 'react-router-dom';
-
+import Bookinterview from './components/candidate/Bookinterview';
+import Leaderboard from "./components/candidate/Leaderboard";
+import Wishlist from "./components/candidate/Wishlist";
+import {Switch, Route, Redirect, BrowserRouter} from 'react-router-dom';
+import axios from 'axios';
+import Leaderboards from './components/Interviewer/Leaderboard';
+import SCHEDULES from './components/Interviewer/Schedule';
 
 class App extends Component{
   constructor(props)
   {
     super(props)
     this.state={
-      isLoggedIn : 'None'
+      username: '',
+      type: 'interviewer'
     }
+    axios.get('http://localhost:3001/getinfo')
+    .then(res => {
+      console.log(res.data);
+      this.setState({
+        username: res.data.username,
+        type: res.data.type
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    this.handleLogin = this.handleLogin.bind(this);
+  }
+
+  handleLogin(type) {
+
   }
   render(){
-    if(this.state.isLoggedIn === 'None')
+    if(this.state.type === 'None')
     {
       return(
         <div>
         <BrowserRouter>
         <Switch >
-              <Route path="/" component = {Home} exact />
+              <Route path="/" component = {() => <Home handletype = { this.handleLogin}/>} exact />
               <Route path="/register" component = {Register}  />
               <Redirect to="/" />
         </Switch>
@@ -31,14 +53,16 @@ class App extends Component{
         </div>
       );
     }
-    else if(this.state.isLoggedIn === 'Interviewer')
+    else if(this.state.type === 'interviewer')
     {
         return(
           <div>
               <BrowserRouter>
                 <Switch>
-                  <Route path="/home" component={Interhome} exact />
-                  <Route path="/add-schedule" component={Schedule} />
+                  <Route path="/" component={Interhome} exact />
+                  <Route path="/schedule" component={Schedule} />
+                  <Route path="/leaderboard" component={Leaderboards} />
+                  <Route path="/schedule" component={SCHEDULES} />
                   <Route path="/error" component={Page} />
                   <Redirect to="/error" />
                 </Switch>
@@ -46,13 +70,20 @@ class App extends Component{
           </div>
         );
     }
-    else if(this.state.isLoggedIn === 'Candidate')
+    else if(this.state.type === 'student')
     {
       return(
           <div>
-              <Route path="/home" component={Candhome} exact />
+            <BrowserRouter>
+              <Switch>
+              <Route path="/" component={Candhome} exact />
+              <Route path="/book-interview" component={Bookinterview} />
+              <Route path="/leaderboard" component={Leaderboard} />
+              <Route path="/wishlist" component={Wishlist} />
               <Route path="/error" component={Page} />
               <Redirect to="/error" />
+              </Switch>
+              </BrowserRouter>
           </div>
       );
     }

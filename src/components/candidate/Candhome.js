@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import {
     Collapse,
     Navbar,
@@ -15,6 +16,7 @@ import {
     NavbarText
   } from 'reactstrap';
   import '../../Style.css'
+import Axios from 'axios';
 
 class Candhome extends Component
 {
@@ -24,10 +26,20 @@ class Candhome extends Component
         super(props)
         this.state={
             isOpen: false,
-            dropdownopen: false
+            dropdownopen: false,
+            name: ''
         }
         this.handletoggle = this.handletoggle.bind(this)
         this.dropdowntoggle = this.dropdowntoggle.bind(this)
+        axios.get('http://localhost:3001/getinfo')
+        .then(res => {
+            this.setState({
+                name: res.data.name
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     dropdowntoggle(e)
@@ -83,6 +95,7 @@ class Candhome extends Component
                             </div>
                         </Collapse>
                 </Navbar>
+                <p>Welcome : {this.state.name}</p>
             </div>
         );
     }

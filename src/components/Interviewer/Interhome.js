@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import {
     Label,
     Collapse,
@@ -17,6 +18,7 @@ import {
   } from 'reactstrap';
   import '../../Style.css'
 
+
 class interhome extends Component
 {
 
@@ -25,8 +27,21 @@ class interhome extends Component
         super(props)
         this.state={
             isOpen: false,
-            dropdownopen: false
+            dropdownopen: false,
+            name: ''
         }
+
+        axios.get("http://localhost:3001/getinfo")
+        .then(res => {
+            this.setState({
+                name: res.data.name
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+
+
         this.handletoggle = this.handletoggle.bind(this)
         this.dropdowntoggle = this.dropdowntoggle.bind(this)
     }
@@ -58,7 +73,7 @@ class interhome extends Component
                                     <NavLink href="/leaderboard">Leader board</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink href="/Schedule">Schedule</NavLink>
+                                    <NavLink href="/schedule">Schedule</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink href="/Alerts">Alerts</NavLink>
@@ -81,6 +96,7 @@ class interhome extends Component
                             </div>
                         </Collapse>
                 </Navbar>
+                <p>Welcome : {this.state.name}</p>
             </div>
         );
     }

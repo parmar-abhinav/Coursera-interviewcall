@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
-import {TabContent, TabPane, Form, FormGroup, Label, Input, FormText , Alert} from 'reactstrap'
+import {TabContent, TabPane, Form, FormGroup, Label, Input, FormText , Alert, FormFeedback} from 'reactstrap'
 import {Col, Row, Button, Navbar, NavbarBrand, Collapse, NavbarToggler, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, NavbarText} from 'reactstrap'
 import Navigationn from '../Navbar/Navigationn';
+import axios from 'axios';
 
 import classnames from 'classnames';
 
@@ -10,6 +11,7 @@ class Register extends Component
     constructor(props){
         super(props)
         this.state = {
+            button: false,
             isOpen: false,
             username: '',
             password: '',
@@ -18,8 +20,10 @@ class Register extends Component
             dob: '',
             mobile: '',
             activetab: '1',
-            type: '',
-            specialization: 'DBMS'
+            type: 'student',
+            specialization: 'DBMS',
+            message: '',
+            alert: false
         }
         this.toggle = this.toggle.bind(this)
         this.handlespecialization = this.handlespecialization.bind(this)
@@ -30,8 +34,9 @@ class Register extends Component
         this.handledob = this.handledob.bind(this)
         this.handletype = this.handletype.bind(this)
         this.handlemobile = this.handlemobile.bind(this)
+        this.handleregister = this.handleregister.bind(this)
     }
-    
+
     toggletab(e){
         if(this.state.tab !== e)
         {
@@ -103,18 +108,49 @@ class Register extends Component
         })
     }
 
-    handleregister(e)
+    togglealert()
     {
-        alert("Register")
+        this.setState({
+            alert: !this.state.toggle
+        })
+    }
+    handleregister(event)
+    {
+        if(this.state.username === '' || this.state.password === '' || this.state.name === '' || this.state.email === '' || this.state.dob === '' || this.state.mobile === '')
+        {
+            this.setState({
+                alert: true,
+                message: "Complete all fields before registration"
+            })
+        }
+        else
+        {
+            axios.post('http://localhost:3001/register', this.state)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
 
     handlecancel(e)
     {
-        alert("cancel")
+        alert('Cancel');
     }
 
     render()
     {
+        if(this.state.alert)
+        {
+            setTimeout(() => {
+                this.setState({
+                    alert: false
+                })
+            }, 3000);
+        }
+
         return(
             <div>
                 <Navigationn />
@@ -144,7 +180,9 @@ class Register extends Component
           </NavItem>
         </Col>
       </Nav>
+        
       <TabContent activeTab={this.state.activetab}>
+      <Alert color="danger" isOpen ={this.state.alert} toggle={this.togglealert} style={{marginTop: '15px'}}>{this.state.message}</Alert>
         <TabPane tabId="1">
                     <br />
                     <div className="container">
@@ -157,42 +195,47 @@ class Register extends Component
                     <FormGroup row>
                         <Label for="username" sm={2}>Username</Label>
                         <Col sm={5}>
-                        <Input type="text" name="username" id="username" placeholder="Username" value={this.state.username} onChange={this.handleusername}/>
+                        <Input type="text" name="username" id="username" placeholder="Username" value={this.state.username} onChange={this.handleusername} />
+                        
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="password" sm={2}>Password</Label>
                         <Col sm={5}>
                         <Input type="password" name="password" id="password" placeholder="Password" value={this.state.password} onChange={this.handlepassword}/>
+                        
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="name" sm={2}>Name</Label>
                         <Col sm={5}>
-                        <Input type="text" name="name" id="name" placeholder="Name" value={this.state.name} onChange={this.handlename}/>
+                        <Input type="text" name="name" id="name" placeholder="Name" value={this.state.name} onChange={this.handlename} />  
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="email" sm={2}>E-mail</Label>
                         <Col sm={5}>
-                        <Input type="email" name="email" id="email" placeholder="E-mail" value={this.state.email} onChange={this.handleemail}/>
+                        <Input type="email" name="email" id="email" placeholder="E-mail" value={this.state.email} onChange={this.handleemail} />
+                        
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="dob" sm={2}>Date of Birth</Label>
                         <Col sm={5}>
-                        <Input type="date" name="dob" id="dob" placeholder="Date of Birth" value={this.state.dob} onChange={this.handledob}/>
+                        <Input type="date" name="dob" id="dob" placeholder="Date of Birth" value={this.state.dob} onChange={this.handledob} />
+                        
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="mobile" sm={2}>Mobile</Label>
                         <Col sm={5}>
-                        <Input type="number" name="mobile" id="mobile" placeholder="Mobile" value={this.state.mobile} onChange={this.handlemobile} min="100000000" max="999999999"/>
+                        <Input type="number" name="mobile" id="mobile" placeholder="Mobile" value={this.state.mobile} onChange={this.handlemobile} min="100000000" max="999999999" />
+                        
                         </Col>
                     </FormGroup>
                     <div className="container">
                     <Button color="success" onClick={this.handleregister}>Register</Button>{'  '}
-                    <Button color="danger" onClick = {this.handlecancel}>Cancel</Button>{'  '}
+                    <Button color="danger" onClick={this.handlecancel}>Cancel</Button>{'  '}
                     </div>
                     </div>
         </TabPane>
@@ -254,8 +297,8 @@ class Register extends Component
                         </Col>
                     </FormGroup>
                     <div className="container">
-                    <Button color="success">Register</Button>{'  '}
-                    <Button color="danger">Cancel</Button>{'  '}
+                    <Button color="success" onClick={this.handleregister}>Register</Button>{'  '}
+                    <Button color="danger" onClick={this.handlecancel}>Cancel</Button>{'  '}
                     </div>
                     </div>
 
