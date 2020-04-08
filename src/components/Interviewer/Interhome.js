@@ -27,21 +27,8 @@ class interhome extends Component
         super(props)
         this.state={
             isOpen: false,
-            dropdownopen: false,
-            name: ''
+            dropdownopen: false
         }
-
-        axios.get("http://localhost:3001/getinfo")
-        .then(res => {
-            this.setState({
-                name: res.data.name
-            })
-        })
-        .catch(err => {
-            console.log(err);
-        })
-
-
         this.handletoggle = this.handletoggle.bind(this)
         this.dropdowntoggle = this.dropdowntoggle.bind(this)
     }
@@ -90,13 +77,13 @@ class interhome extends Component
                                         <DropdownMenu right>
                                             <NavLink href="/myprofile"><DropdownItem>My Profile</DropdownItem></NavLink>
                                             <NavLink href="/edit"><DropdownItem>Edit Profile</DropdownItem></NavLink>
-                                            <NavLink href="/logout"><DropdownItem className="logout">Logout</DropdownItem></NavLink>
+                                            <NavLink href="#" onClick = {() => this.props.UPDATE_APP('', 'None')}><DropdownItem className="logout">Logout</DropdownItem></NavLink>
                                         </DropdownMenu>
                                     </Dropdown>
                             </div>
                         </Collapse>
                 </Navbar>
-                <p>Welcome : {this.state.name}</p>
+                <p>Welcome : {this.props.username}</p>
             </div>
         );
     }

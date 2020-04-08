@@ -50,7 +50,8 @@ class Navigationn extends Component
         {
             axios.post('http://localhost:3001/signin', this.state)
             .then(res => {
-                console.log(res);
+                console.log(res.data);
+                this.props.UPDATE_APP(res.data.username, res.data.type);
             })
             .catch(err => {
                 console.log(err);

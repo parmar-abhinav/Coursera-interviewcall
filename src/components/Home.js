@@ -35,7 +35,7 @@ class Home extends Component
           ];
   return (
             <div>
-                <Navigationn  greet = {this.changetype} />
+                <Navigationn UPDATE_APP = {this.props.UPDATE_APP}/>
                 <div className="col-12 mt-1">
                     <UncontrolledCarousel items={items} />
                 </div>
